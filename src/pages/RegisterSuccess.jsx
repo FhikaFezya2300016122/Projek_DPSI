@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import Icon from '../Image/Icon.png';
+import Icon from '../Images/Icon.png';
 
 export default function RegisterSuccess() {
   const navigate = useNavigate();

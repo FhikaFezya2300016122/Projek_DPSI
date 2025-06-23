@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RoleSelection from '../components/Register/RoleSelection';
-import Icon from '../Image/Icon.png';
+import Icon from '../Images/Icon.png';
 
 export default function RegisterCard() {
   const [selectedRole, setSelectedRole] = useState(null);

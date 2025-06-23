@@ -1,6 +1,6 @@
 import RoleSelectionCard from './RoleSelectionCard';
-import StudentImg from '../../Image/Student.png';
-import TeacherImg from '../../Image/Teacher.png';
+import StudentImg from '../../Images/Student.png';
+import TeacherImg from '../../Images/Teacher.png';
 
 
 const roles = [
