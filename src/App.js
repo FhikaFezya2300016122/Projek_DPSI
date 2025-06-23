@@ -33,7 +33,7 @@ const Profile = () => (
 
 const Settings = () => (
     <div className="p-8">
-        <h1 className="text-3xl font-bold">Halaman Settings</h1>
+        <h1 className="text-3xl font-bold">Halaman Setting</h1>
     </div>
 );
 
