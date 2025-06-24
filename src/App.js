@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword"; 
+import Home from "./pages/classroom/home";
 
 import './index.css';
 import './App.css';
@@ -20,6 +21,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} /> {/* ✅ Tambahan */}
+          <Route path="/classroom/home" element={<Home />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
