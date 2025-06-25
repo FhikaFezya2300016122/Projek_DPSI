@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { HiEye, HiEyeOff } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // 1. Impor useNavigate
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -8,6 +8,9 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  // 2. Inisialisasi hook useNavigate
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -28,7 +31,8 @@ const LoginForm = () => {
     }
 
     if (valid) {
-      alert("Login successful!");
+      // 3. Alihkan ke dasbor setelah validasi berhasil
+      navigate("/dashboard");
     }
   };
 
