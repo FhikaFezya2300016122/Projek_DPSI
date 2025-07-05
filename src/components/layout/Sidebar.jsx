@@ -1,8 +1,12 @@
 // src/components/layout/Sidebar.jsx
 
-// 1. Impor useState DAN motion
-import React, { useState } from "react";
-import { motion } from "framer-motion"; // <-- PENYEBAB ERROR: Baris ini hilang
+import React from "react";
+import { motion } from "framer-motion";
+// 1. Impor NavLink untuk navigasi dan useTranslation untuk bahasa
+import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
+// 2. Impor ikon Anda seperti biasa
 import { 
     HiOutlineViewGrid,
     HiOutlineBookOpen,
@@ -15,26 +19,28 @@ import { FaGraduationCap } from "react-icons/fa";
 
 // Varian animasi (tetap sama)
 const sidebarVariants = {
-  visible: { x: 0 },
-  hidden: { x: "-100%" }, 
+    visible: { x: 0 },
+    hidden: { x: "-100%" }, 
 };
 
 const Sidebar = ({ onClose }) => {
+    // 3. Panggil hook useTranslation untuk mendapatkan fungsi t (penerjemah)
+    const { t } = useTranslation();
+
+    // 4. Definisikan menu dengan path untuk NavLink dan nama yang sudah diterjemahkan
     const mainMenu = [
-        { icon: <HiOutlineViewGrid />, name: "Dashboard" },
-        { icon: <HiOutlineBookOpen />, name: "Classroom" },
-        { icon: <HiOutlineChartPie />, name: "Activity" },
+        { icon: <HiOutlineViewGrid />, name: t('sidebar_dashboard'), path: "/dashboard" },
+        { icon: <HiOutlineBookOpen />, name: t('sidebar_classroom'), path: "/classroom" },
+        { icon: <HiOutlineChartPie />, name: t('sidebar_activity'), path: "/activity" },
     ];
     const otherMenu = [
-        { icon: <HiOutlineUser />, name: "Profile" },
-        { icon: <HiOutlineCog />, name: "Settings" },
+        { icon: <HiOutlineUser />, name: t('sidebar_profile'), path: "/profile" },
+        { icon: <HiOutlineCog />, name: t('sidebar_settings'), path: "/settings" },
     ];
 
-    // State untuk menu aktif (tetap sama)
-    const [activeItem, setActiveItem] = useState("Classroom");
+    // State `activeItem` tidak lagi dibutuhkan karena NavLink akan menanganinya secara otomatis
 
     return (
-        // Gunakan motion.div (tetap sama)
         <motion.div 
             variants={sidebarVariants}
             initial="hidden"
@@ -63,18 +69,21 @@ const Sidebar = ({ onClose }) => {
                         <ul>
                             {mainMenu.map((item, index) => (
                                 <li key={index} className="mb-2">
-                                    <a 
-                                        href="#" 
-                                        onClick={() => setActiveItem(item.name)}
-                                        className={`flex items-center p-3 rounded-lg transition-colors ${
-                                            activeItem === item.name 
-                                            ? "bg-teal-500 text-white font-semibold shadow-md"
-                                            : "text-gray-500 hover:bg-teal-50 hover:text-teal-600"
-                                        }`}
+                                    {/* 5. GANTI <a> DENGAN <NavLink> */}
+                                    <NavLink 
+                                        to={item.path} 
+                                        // NavLink secara otomatis memberikan style untuk link yang aktif
+                                        className={({ isActive }) => 
+                                            `flex items-center p-3 rounded-lg transition-colors ${
+                                                isActive 
+                                                ? "bg-teal-500 text-white font-semibold shadow-md"
+                                                : "text-gray-500 hover:bg-teal-50 hover:text-teal-600"
+                                            }`
+                                        }
                                     >
                                         <span className="mr-3 text-2xl">{item.icon}</span>
                                         {item.name}
-                                    </a>
+                                    </NavLink>
                                 </li>
                             ))}
                         </ul>
@@ -86,18 +95,20 @@ const Sidebar = ({ onClose }) => {
                         <ul>
                             {otherMenu.map((item, index) => (
                                 <li key={index} className="mb-2">
-                                    <a 
-                                        href="#" 
-                                        onClick={() => setActiveItem(item.name)}
-                                        className={`flex items-center p-3 rounded-lg transition-colors ${
-                                            activeItem === item.name
-                                            ? "bg-teal-500 text-white font-semibold shadow-md"
-                                            : "text-gray-500 hover:bg-teal-50 hover:text-teal-600"
-                                        }`}
+                                    {/* 6. GANTI <a> DENGAN <NavLink> DI SINI JUGA */}
+                                    <NavLink 
+                                        to={item.path}
+                                        className={({ isActive }) => 
+                                            `flex items-center p-3 rounded-lg transition-colors ${
+                                                isActive
+                                                ? "bg-teal-500 text-white font-semibold shadow-md"
+                                                : "text-gray-500 hover:bg-teal-50 hover:text-teal-600"
+                                            }`
+                                        }
                                     >
                                         <span className="mr-3 text-2xl">{item.icon}</span>
                                         {item.name}
-                                    </a>
+                                    </NavLink>
                                 </li>
                             ))}
                         </ul>

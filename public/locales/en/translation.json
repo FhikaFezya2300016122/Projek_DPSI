@@ -1,0 +1,38 @@
+{
+  "settings_title": "Settings",
+  "change_password": "Change password",
+  "notification_settings": "Notification settings",
+  "language": "Language",
+  "help_support": "Help & Support",
+  "logout": "Logout",
+  "select_language": "Select your preferred language",
+
+  "sidebar_dashboard": "Dashboard",
+  "sidebar_classroom": "Classroom",
+  "sidebar_activity": "Activity",
+  "sidebar_profile": "Profile",
+  "sidebar_settings": "Settings",
+  
+  "dashboard_title": "Dashboard",
+  "dashboard_welcome": "Welcome back!",
+  "dashboard_greeting": "Let's continue your learning journey today.",
+
+  "profile_title": "Profile",
+  "profile_personal_info": "Personal info",
+  "profile_achievement": "Achievement",
+  "profile_recent_activity": "Recent Activity",
+  "profile_strength": "Profile Strength",
+  "profile_completed": "Completed",
+  "profile_edit_button": "Edit Profile",
+
+  "activity_title": "Activity",
+  "activity_all_games": "All Games",
+  "activity_crossword": "Crossword",
+  "activity_puzzle": "Puzzle",
+  
+  "leaderboard_title": "Leaderboard",
+  "leaderboard_weekly": "Weekly",
+  "leaderboard_monthly": "Monthly",
+  "leaderboard_all_time": "All time",
+  "leaderboard_my_rank": "My Rank"
+}
