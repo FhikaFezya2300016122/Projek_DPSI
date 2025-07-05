@@ -1,0 +1,38 @@
+{
+  "settings_title": "Pengaturan",
+  "change_password": "Ganti Kata Sandi",
+  "notification_settings": "Pengaturan Notifikasi",
+  "language": "Bahasa",
+  "help_support": "Bantuan & Dukungan",
+  "logout": "Keluar",
+  "select_language": "Pilih bahasa pilihan Anda",
+
+  "sidebar_dashboard": "Dasbor",
+  "sidebar_classroom": "Ruang Kelas",
+  "sidebar_activity": "Aktivitas",
+  "sidebar_profile": "Profil",
+  "sidebar_settings": "Pengaturan",
+  
+  "dashboard_title": "Dasbor",
+  "dashboard_welcome": "Selamat datang kembali!",
+  "dashboard_greeting": "Ayo lanjutkan perjalanan belajarmu hari ini.",
+
+  "profile_title": "Profil",
+  "profile_personal_info": "Info Pribadi",
+  "profile_achievement": "Pencapaian",
+  "profile_recent_activity": "Aktivitas Terkini",
+  "profile_strength": "Kekuatan Profil",
+  "profile_completed": "Lengkap",
+  "profile_edit_button": "Ubah Profil",
+  
+  "activity_title": "Aktivitas",
+  "activity_all_games": "Semua Game",
+  "activity_crossword": "Teka-Teki Silang",
+  "activity_puzzle": "Puzzle",
+  
+  "leaderboard_title": "Papan Peringkat",
+  "leaderboard_weekly": "Mingguan",
+  "leaderboard_monthly": "Bulanan",
+  "leaderboard_all_time": "Semua waktu",
+  "leaderboard_my_rank": "Peringkat Saya"
+}
