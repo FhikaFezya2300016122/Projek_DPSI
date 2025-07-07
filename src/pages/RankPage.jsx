@@ -1,9 +1,12 @@
+// src/pages/RankPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
-// Impor komponen-komponen
-import Sidebar from '../components/layout/Sidebar/sidebar';
-import Header from '../components/layout/Header/Header';
+// HAPUS impor komponen layout
+// import Sidebar from '../components/layout/Sidebar/sidebar';
+// import Header from '../components/layout/Header/Header';
+
 import RankCard from '../components/rank/RankCard';
 import RankProgressBar from '../components/rank/RankProgressBar';
 
@@ -20,7 +23,7 @@ const RankPage = () => {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Mengambil data profil dari Supabase saat halaman dimuat
+    // useEffect untuk mengambil data profil (TIDAK ADA PERUBAHAN)
     useEffect(() => {
         const fetchProfile = async () => {
             const { data: { user } } = await supabase.auth.getUser();
@@ -37,31 +40,28 @@ const RankPage = () => {
         fetchProfile();
     }, []);
 
+    // Tampilan loading (TIDAK ADA PERUBAHAN)
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">Loading Ranks...</div>
     }
 
+    // UBAH HANYA BAGIAN RETURN UTAMA DI BAWAH INI
     return (
-        <div className="flex min-h-screen bg-gray-100 font-sans">
-            <Sidebar />
-            <div className="flex-1 flex flex-col">
-                <Header />
-                <main className="flex-1 p-4 md:p-8">
-                    <h1 className="text-3xl font-bold text-gray-800">Rank</h1>
-                    <RankProgressBar userPoints={profile?.total_points || 0} ranks={RANKS_DATA} />
+        // Gunakan <> (React.Fragment) untuk membungkus konten
+        <>
+            <h1 className="text-3xl font-bold text-gray-800">Rank</h1>
+            <RankProgressBar userPoints={profile?.total_points || 0} ranks={RANKS_DATA} />
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
-                        {RANKS_DATA.map(rank => (
-                            <RankCard 
-                                key={rank.name} 
-                                rank={rank}
-                                userPoints={profile?.total_points || 0} 
-                            />
-                        ))}
-                    </div>
-                </main>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-4">
+                {RANKS_DATA.map(rank => (
+                    <RankCard 
+                        key={rank.name} 
+                        rank={rank}
+                        userPoints={profile?.total_points || 0} 
+                    />
+                ))}
             </div>
-        </div>
+        </>
     );
 };
 

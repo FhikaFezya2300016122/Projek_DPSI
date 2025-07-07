@@ -59,7 +59,7 @@ const MainLayout = () => {
             
             <div className="flex-1 flex flex-col">
                 <Header onMenuClick={toggleSidebar} />
-                <main>
+                <main className="p-4 md:p-8">
                     {/* <Outlet> adalah tempat halaman (Daftar Kelas, Detail Kelas) akan dirender */}
                     <Outlet />
                 </main>

@@ -1,83 +1,79 @@
+// src/components/layout/Sidebar.jsx
+
 import React from 'react';
+import logoEnglify from "../../Images/Icon.png";
+import { 
+    HiChartPie, 
+    HiCollection, 
+    HiLightningBolt, 
+    HiUserCircle, 
+    HiCog 
+} from 'react-icons/hi';
 import { Link, useLocation } from 'react-router-dom';
 
-// Impor logo dari folder Images
-// PERBAIKAN: Jalur impor diperbarui menjadi tiga level ke atas ('../../../')
-import logo from '../../../Images/Icon.png'; 
-
-// --- DEFINISI IKON ---
-const HomeIcon = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>
-);
-const BookOpenIcon = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>
-);
-const ActivityIcon = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg>
-);
-const UserIcon = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
-);
-const SettingsIcon = (props) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" /><circle cx="12" cy="12" r="3" /></svg>
-);
-
-
-// --- KOMPONEN SIDEBAR ---
-const Sidebar = () => {
-    const location = useLocation();
+const sidebar = () => {
+    // Kita akan gunakan useLocation untuk menentukan link mana yang aktif nanti
+    // Untuk sekarang, kita hardcode 'Classroom' sebagai halaman aktif
+    const activePage = 'Classroom'; 
 
     const mainMenuItems = [
-        { icon: <HomeIcon />, name: 'Dashboard', path: '/dashboard' },
-        { icon: <BookOpenIcon />, name: 'Classroom', path: '/classroom' },
-        { icon: <ActivityIcon />, name: 'Activity', path: '/activity' },
-    ];
-    const otherMenuItems = [
-        { icon: <UserIcon />, name: 'Profile', path: '/profile' },
-        { icon: <SettingsIcon />, name: 'Settings', path: '/settings' },
+        { name: 'Dashboard', icon: <HiChartPie className="w-6 h-6" />, path: '/dashboard' },
+        { name: 'Classroom', icon: <HiCollection className="w-6 h-6" />, path: '/classroom' },
+        { name: 'Activity', icon: <HiLightningBolt className="w-6 h-6" />, path: '/activity' },
     ];
 
-    const NavItem = ({ item }) => {
-        const isActive = location.pathname === item.path;
-        
-        return (
-            <Link
-                to={item.path}
-                className={`flex items-center px-4 py-3 rounded-lg transition-colors duration-200 ${
-                    isActive
-                        ? 'bg-green-100 text-green-600 font-bold'
-                        : 'text-gray-500 hover:bg-gray-100'
-                }`}
-            >
-                {React.cloneElement(item.icon, { className: 'w-6 h-6 mr-3' })}
-                <span>{item.name}</span>
-            </Link>
-        );
-    };
+    const otherMenuItems = [
+        { name: 'Profile', icon: <HiUserCircle className="w-6 h-6" />, path: '/profile' },
+        { name: 'Settings', icon: <HiCog className="w-6 h-6" />, path: '/settings' },
+    ];
 
     return (
-        <aside className="hidden md:flex w-64 bg-white p-6 flex-col flex-shrink-0 border-r border-gray-200">
-            <div className="flex items-center mb-10">
-                {/* PERBAIKAN: Menggunakan tag <img> untuk logo */}
-                <img src={logo} alt="Englify Logo" className="w-10 h-10" />
-                <h1 className="text-2xl font-bold ml-3 text-gray-800">Englify</h1>
+        <div className="h-screen bg-white w-64 p-6 flex flex-col shadow-lg">
+            {/* Logo */}
+            <div className="mb-10">
+                 <img src={logoEnglify} alt="Englify Logo" className="h-8 w-auto" />
             </div>
-            <nav className="space-y-4">
-                <div>
-                    <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Main</h2>
-                    <div className="space-y-2">
-                        {mainMenuItems.map((item) => <NavItem key={item.name} item={item} />)}
-                    </div>
-                </div>
-                <div>
-                    <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-8 mb-2">Other Menu</h2>
-                    <div className="space-y-2">
-                        {otherMenuItems.map((item) => <NavItem key={item.name} item={item} />)}
-                    </div>
-                </div>
+
+            {/* Main Menu */}
+            <nav className="flex-grow">
+                <p className="text-xs text-gray-400 font-semibold uppercase mb-4">Main</p>
+                <ul className="space-y-2">
+                    {mainMenuItems.map((item) => (
+                        <li key={item.name}>
+                            <Link 
+                                to={item.path} 
+                                className={`flex items-center gap-4 p-3 rounded-lg font-semibold transition-colors duration-200 ${
+                                    activePage === item.name 
+                                    ? 'bg-teal-500 text-white shadow-md' 
+                                    : 'text-gray-600 hover:bg-gray-100'
+                                }`}
+                            >
+                                {item.icon}
+                                <span>{item.name}</span>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+
+                <p className="text-xs text-gray-400 font-semibold uppercase mt-10 mb-4">Other Menu</p>
+                <ul className="space-y-2">
+                    {otherMenuItems.map((item) => (
+                        <li key={item.name}>
+                            <Link 
+                                to={item.path} 
+                                className="flex items-center gap-4 p-3 rounded-lg font-semibold text-gray-600 hover:bg-gray-100 transition-colors duration-200"
+                            >
+                                {item.icon}
+                                <span>{item.name}</span>
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
             </nav>
-        </aside>
+
+            {/* Mungkin nanti bisa ditambahkan info user atau tombol logout di sini */}
+        </div>
     );
 };
 
-export default Sidebar;
+export default sidebar;
