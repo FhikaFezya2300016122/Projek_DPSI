@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { 
     HiX, 
     HiDotsVertical, 
-    HiArrowRight 
+    HiArrowRight  
 } from "react-icons/hi";
 
 // ===================================================================
