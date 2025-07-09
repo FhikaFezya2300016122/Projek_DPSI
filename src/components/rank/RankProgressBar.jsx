@@ -1,36 +1,24 @@
+// src/components/rank/RankProgressBar.jsx
+
 import React from 'react';
 
-// Komponen ini menampilkan progress bar di bagian atas halaman Rank
 const RankProgressBar = ({ userPoints, ranks }) => {
-    
-    // Temukan rank pengguna saat ini
-    let currentRankIndex = 0;
-    for (let i = ranks.length - 1; i >= 0; i--) {
-        if (userPoints >= ranks[i].points_required) {
-            currentRankIndex = i;
-            break;
-        }
-    }
+    // Cari rank saat ini yang sudah dicapai pengguna
+    const currentRankIndex = ranks.slice().reverse().findIndex(rank => userPoints >= rank.points_required);
+    const activeIndex = currentRankIndex !== -1 ? ranks.length - 1 - currentRankIndex : -1;
 
     return (
-        <div className="w-full px-4 md:px-8 py-6">
-            <div className="flex items-center justify-between">
+        <div className="relative w-full my-8">
+            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-200" style={{ transform: 'translateY(-50%)' }}></div>
+            <div className="flex justify-between items-center relative">
                 {ranks.map((rank, index) => (
-                    <React.Fragment key={rank.name}>
-                        {/* Node (lingkaran) untuk setiap rank */}
-                        <div className="flex flex-col items-center z-10">
-                            <div className={`w-8 h-8 rounded-full border-4 flex items-center justify-center transition-all duration-500 ${index <= currentRankIndex ? 'bg-white border-green-500' : 'bg-gray-200 border-gray-300'}`}>
-                                {index <= currentRankIndex && (
-                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                )}
-                            </div>
-                        </div>
-                        
-                        {/* Garis penghubung antar node */}
-                        {index < ranks.length - 1 && (
-                            <div className={`flex-1 h-1 transition-colors duration-500 ${index < currentRankIndex ? 'bg-green-500' : 'bg-gray-300'}`}></div>
-                        )}
-                    </React.Fragment>
+                    <div
+                        key={rank.name}
+                        className={`w-6 h-6 rounded-full border-4 transition-colors duration-500 ${
+                            index <= activeIndex ? 'bg-green-500 border-white' : 'bg-gray-300 border-gray-200'
+                        }`}
+                        style={{ boxShadow: '0 0 0 4px #e5e7eb' }} // Menambahkan outline
+                    ></div>
                 ))}
             </div>
         </div>

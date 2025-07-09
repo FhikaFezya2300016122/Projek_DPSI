@@ -1,80 +1,79 @@
-import { useState } from 'react';
-import { leaderboardData, myRankData } from '../../data/mockData';
-import { ArrowUpRight, ArrowDownRight, Minus } from 'lucide-react'; // pastikan kamu install lucide-react
+// src/components/activity/Leaderboard.jsx
 
-export default function Leaderboard() {
-  const [activeTab, setActiveTab] = useState('All time');
-  const tabs = ['Weekly', 'Monthly', 'All time'];
+import React, { useEffect, useState, useCallback } from 'react';
+import { supabase } from '../../supabaseClient';
+import { FaCrown } from 'react-icons/fa';
+import { useLocation } from 'react-router-dom';
 
-  const handleTabChange = (tab) => setActiveTab(tab);
+const Leaderboard = () => {
+    const [topUsers, setTopUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const location = useLocation();
 
-  return (
-    <div className="bg-white rounded-xl shadow-lg w-full max-w-md mx-auto p-4">
-      {/* Title & Tabs */}
-      <div className="flex flex-col items-center mb-4">
-        <h2 className="text-xl font-bold mb-2">Leaderboard</h2>
-        <div className="flex bg-gray-100 rounded-full p-1">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => handleTabChange(tab)}
-              className={`px-4 py-1 text-sm font-medium rounded-full transition-colors duration-200 ${
-                activeTab === tab ? 'bg-white text-black shadow' : 'text-gray-500'
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+    const fetchLeaderboard = useCallback(async () => {
+        setLoading(true);
+        
+        // PERBAIKAN DI SINI: Mengambil 'full_name' dan 'total_points'
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('full_name, total_points, avatar_url')
+            .order('total_points', { ascending: false })
+            .limit(10);
+
+        if (error) {
+            console.error('Error fetching leaderboard:', error);
+        } else {
+            setTopUsers(data);
+        }
+        setLoading(false);
+    }, []);
+
+    useEffect(() => {
+        fetchLeaderboard();
+    }, [fetchLeaderboard, location]);
+
+    const getMedalColor = (index) => {
+        if (index === 0) return 'text-yellow-400'; // Emas
+        if (index === 1) return 'text-gray-400';  // Perak
+        if (index === 2) return 'text-yellow-600';// Perunggu
+        return 'text-gray-300';
+    };
+
+    if (loading) {
+        return <div className="p-4 text-center">Memuat papan peringkat...</div>;
+    }
+
+    if (!topUsers.length) {
+        return <div className="p-4 text-center">Belum ada data peringkat.</div>
+    }
+
+    return (
+        <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Papan Peringkat</h2>
+            <ul className="space-y-4">
+                {topUsers.map((user, index) => (
+                    <li key={user.full_name + index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center gap-4">
+                            <span className={`font-bold text-lg w-6 text-center ${getMedalColor(index)}`}>
+                                {index < 3 ? <FaCrown /> : index + 1}
+                            </span>
+                            <img
+                                src={user.avatar_url || `https://api.dicebear.com/8.x/initials/svg?seed=${user.full_name}`}
+                                alt={user.full_name}
+                                className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                            />
+                            <div>
+                                {/* PERBAIKAN DI SINI: Menampilkan 'full_name' dan 'total_points' */}
+                                <p className="font-semibold text-gray-700">{user.full_name}</p>
+                                <p className="text-sm text-gray-500">{user.total_points || 0} Poin</p>
+                            </div>
+                        </div>
+                        <span className="font-bold text-teal-500 text-lg">#{index + 1}</span>
+                    </li>
+                ))}
+            </ul>
         </div>
-      </div>
+    );
+};
 
-      {/* Header */}
-      <div className="grid grid-cols-3 text-xs text-gray-400 font-semibold px-2 pb-2 border-b border-gray-200">
-        <div>Rank</div>
-        <div className="text-center">Player</div>
-        <div className="text-right">Points</div>
-      </div>
-
-      {/* Leaderboard Entries */}
-      <div className="divide-y divide-gray-100">
-        {leaderboardData.map((user, index) => (
-          <div key={index} className="flex items-center py-3 px-2">
-            {/* Rank + Icon */}
-            <div className="flex items-center gap-1 w-12 text-sm font-medium text-gray-500">
-              {user.movement === 'up' && <ArrowUpRight className="text-green-500 w-4 h-4" />}
-              {user.movement === 'down' && <ArrowDownRight className="text-red-500 w-4 h-4" />}
-              {user.movement === 'same' && <Minus className="text-gray-400 w-4 h-4" />}
-              {user.rank}
-            </div>
-
-            {/* Avatar + Name */}
-            <div className="flex-1 flex items-center gap-3">
-              <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full border-2 border-yellow-400" />
-              <div>
-                <div className="font-semibold text-gray-800">{user.name}</div>
-                <div className="text-xs text-gray-400">Diamond</div>
-              </div>
-            </div>
-
-            {/* Score */}
-            <div className="text-sm font-bold text-gray-700 text-right w-20">{user.score}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* My Rank */}
-      <div className="mt-4 border-t pt-4">
-        <div className="text-sm font-semibold text-gray-600 mb-2">My Rank</div>
-        <div className="flex items-center p-3 rounded-lg bg-gray-100">
-          <div className="w-12 font-medium text-gray-700">{myRankData.rank}</div>
-          <img src={myRankData.avatar_url} className="w-10 h-10 rounded-full border-2 border-yellow-400 mr-3" />
-          <div className="flex-1">
-            <div className="font-semibold text-gray-800">{myRankData.username}</div>
-            <div className="text-xs text-gray-400">Diamond</div>
-          </div>
-          <div className="text-sm font-bold text-gray-800">{myRankData.score} PTS</div>
-        </div>
-      </div>
-    </div>
-  );
-}
+export default Leaderboard;
