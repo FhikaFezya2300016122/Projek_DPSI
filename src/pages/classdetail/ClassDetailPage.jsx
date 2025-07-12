@@ -1,96 +1,127 @@
 // src/pages/classdetail/ClassDetailPage.jsx
-import React, { useState } from 'react';
-import ClassLeaderboard from '../classdetail/ClassLeaderboard';
-import { HiArrowLeft, HiChevronRight } from 'react-icons/hi';
-import { useNavigate, Link } from 'react-router-dom'; // <-- Impor Link
-import PostCard from '../classdetail/PostCard'; // <-- Impor komponen baru
-import AssignmentView from '../classdetail/AssignmentView';
-import PeopleView from '../classdetail/PeopleView';
 
-// Data Contoh untuk Postingan
-const mockPosts = [
-    {
-        id: 1,
-        title: 'Assignment Session 3, Phase 3',
-        content: 'Lorem ipsum dolor sit amet consectetur. Lorem viverra facilisi quis tincidunt arcu. Faucibus accumsan dignissim ut tortor semper.',
-        authorName: 'Teacher Salsabila',
-        authorAvatar: 'https://i.pravatar.cc/150?u=salsabila',
-        timestamp: '1hr ago',
-        commentCount: 21,
-        // PERBARUI DATA GAME DI SINI
-        game: { 
-            title: 'Body word structure', 
-            type: 'Puzzle',
-            difficulty: 'Easy, 10 Questions',
-            plays: '125k Plays'
-        }
-    },
-    {
-        id: 2,
-        title: 'Lorem ipsum dolor sit amet consectetur.',
-        content: 'Lorem ipsum dolor sit amet consectetur. Lorem viverra facilisi quis tincidunt arcu. Faucibus accumsan dignissim ut tortor semper.',
-        authorName: 'Teacher Salsabila',
-        authorAvatar: 'https://i.pravatar.cc/150?u=salsabila',
-        timestamp: '5day ago',
-        commentCount: 14,
-        game: null
-    }
-];
-
-
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { supabase } from '../../supabaseClient';
+import { useAuth } from '../../context/AuthContext';
+import { HiPlus } from "react-icons/hi";
+import AddGameModal from './components/AddGameModal';
+import GameCard from '../../components/activity/GameCard';
+import { Edit } from 'lucide-react';
 
 const ClassDetailPage = () => {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('Forum');
-  const tabs = ['Forum', 'Assignment', 'People'];
+    const { classId } = useParams();
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
-  return (
-    <div className="space-y-6">
-      
-      {/* Header Halaman */}
-      <div className="flex items-center gap-4">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-gray-200 transition-colors">
-          <HiArrowLeft className="w-6 h-6 text-gray-700" />
-        </button>
-        <h1 className="text-2xl font-bold text-gray-800">Class 7c</h1>
-      </div>
+    const [classDetails, setClassDetails] = useState(null);
+    const [userRole, setUserRole] = useState(null);
+    const [assignedGames, setAssignedGames] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-      {/* Breadcrumbs (PERUBAHAN DI SINI) */}
-      <nav className="text-sm font-semibold text-gray-500 flex items-center gap-1.5">
-        <Link to="/classroom" className="hover:text-gray-800 hover:underline">Classroom</Link>
-        <HiChevronRight className="w-4 h-4" />
-        <span className="text-gray-800">Class 7c</span>
-      </nav>
+    const fetchClassData = useCallback(async () => {
+        if (!user || !classId) return;
+        setLoading(true);
 
-      {/* Navigasi Tab */}
-      <div className="flex items-center gap-2 bg-gray-100 p-1.5 rounded-full w-max">
-        {tabs.map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 ${activeTab === tab ? 'bg-teal-500 text-white shadow-md' : 'text-gray-600 hover:bg-white'}`}>
-            {tab}
-          </button>
-        ))}
-      </div>
+        const { data: classData } = await supabase.from('classes').select('*').eq('id', classId).single();
+        const { data: memberData } = await supabase.from('class_members').select('role').eq('user_id', user.id).eq('class_id', classId).single();
+        
+        // **PERBAIKAN KUNCI DI SINI**
+        // Query sekarang mengambil semua detail dari tabel 'games'
+        const { data: assignmentData, error } = await supabase
+            .from('class_assignments')
+            .select('games (*)') // Ini akan mengambil semua kolom dari game yang terhubung
+            .eq('class_id', classId);
 
-      {/* Area Konten */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-        <div className="lg:col-span-2 space-y-6">
-          {activeTab === 'Forum' && (
-            <>
-              <div className="bg-white p-4 rounded-lg shadow-sm">
-                <p className="text-gray-500">announce something to your class</p>
-              </div>
-              {mockPosts.map(post => ( <PostCard key={post.id} post={post} /> ))}
-            </>
-          )}
-          {activeTab === 'Assignment' && ( <AssignmentView /> )}
-          {activeTab === 'People' && ( <PeopleView /> )}
+        if (error) console.error("Error fetching assignments:", error);
+
+        setClassDetails(classData);
+        setUserRole(memberData?.role);
+        
+        if (assignmentData) {
+            // Kita tidak perlu lagi membedakan game custom atau bukan di sini
+            setAssignedGames(assignmentData.map(item => item.games).filter(Boolean));
+        } else {
+            setAssignedGames([]);
+        }
+        
+        setLoading(false);
+    }, [classId, user]);
+
+    useEffect(() => {
+        fetchClassData();
+    }, [fetchClassData]);
+
+    if (loading) return <div className="p-8 text-center">Memuat detail kelas...</div>;
+    if (!classDetails) return <div className="p-8 text-center">Kelas tidak ditemukan.</div>;
+
+    const existingGameIds = assignedGames.map(game => game.id);
+
+    return (
+        <div className="p-4 md:p-8">
+            <div className="mb-8 p-6 bg-white rounded-lg shadow">
+                <h1 className="text-4xl font-bold">{classDetails.class_name}</h1>
+                <p className="text-gray-600 mt-2">{classDetails.description}</p>
+                <p className="text-sm text-gray-500 mt-4">
+                    Kode Kelas: 
+                    <span className="ml-2 font-mono bg-gray-200 text-gray-800 px-2 py-1 rounded">
+                        {classDetails.class_code}
+                    </span>
+                </p>
+            </div>
+
+            <div>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold">Tugas Game</h2>
+                    {userRole === 'teacher' && (
+                        <div className="flex gap-4">
+                             <button 
+                                onClick={() => navigate('/create-custom-game')}
+                                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                            >
+                                <Edit size={16} />
+                                Buat Game Custom
+                            </button>
+                            <button 
+                                onClick={() => setIsModalOpen(true)}
+                                className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700"
+                            >
+                                <HiPlus />
+                                Tambahkan Game
+                            </button>
+                        </div>
+                    )}
+                </div>
+                
+                {assignedGames.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {assignedGames.map(game => (
+                            <div key={game.id} onClick={() => navigate(game.path)} className="cursor-pointer">
+                                <GameCard game={game} />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-16 bg-gray-50 rounded-lg border-2 border-dashed">
+                        <p className="text-gray-500">
+                            {userRole === 'teacher' ? 'Belum ada game yang ditambahkan.' : 'Guru Anda belum menambahkan game.'}
+                        </p>
+                    </div>
+                )}
+            </div>
+
+            {userRole === 'teacher' && (
+                 <AddGameModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    classId={classId}
+                    onGamesAdded={fetchClassData}
+                    existingGameIds={existingGameIds}
+                />
+            )}
         </div>
-        <div className="lg:col-span-1">
-          <ClassLeaderboard />
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default ClassDetailPage;

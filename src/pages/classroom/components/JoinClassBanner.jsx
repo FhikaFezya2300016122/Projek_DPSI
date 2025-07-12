@@ -1,49 +1,59 @@
-// src/components/classroom/JoinClassBanner.jsx
+import React, { useState } from 'react';
+import { supabase } from '../../../supabaseClient';
+import { useAuth } from '../../../context/AuthContext';
+import toast from 'react-hot-toast';
 
-import React from 'react';
-import illustration from '../../Images/joinclass.png'; // Pastikan path ini benar
+const JoinClassBanner = ({ onClassJoined }) => {
+    const { user } = useAuth();
+    const [classCode, setClassCode] = useState('');
+    const [loading, setLoading] = useState(false);
 
-const JoinClassBanner = ({ code, setCode, onJoin, error }) => {
+    const handleJoinClass = async (e) => {
+        e.preventDefault();
+        if (!classCode.trim() || !user) {
+            toast.error("Kode kelas tidak boleh kosong.");
+            return;
+        }
+
+        setLoading(true);
+        const toastId = toast.loading('Mencari kelas...');
+        
+        const { data: classData, error: findError } = await supabase
+            .from('classes')
+            .select('id')
+            .eq('class_code', classCode.trim().toUpperCase())
+            .single();
+
+        if (findError || !classData) {
+            toast.error('Kelas tidak ditemukan.', { id: toastId });
+            setLoading(false);
+            return;
+        }
+
+        const { error: joinError } = await supabase
+            .from('class_members')
+            .insert({ class_id: classData.id, user_id: user.id, role: 'student' });
+
+        if (joinError) {
+            if (joinError.code === '23505') toast.error('Anda sudah bergabung di kelas ini.', { id: toastId });
+            else toast.error(`Gagal bergabung: ${joinError.message}`, { id: toastId });
+            setLoading(false);
+            return;
+        }
+
+        toast.success('Berhasil bergabung dengan kelas!', { id: toastId });
+        setLoading(false);
+        onClassJoined();
+    };
+
     return (
-        <div className="relative p-8 rounded-2xl overflow-hidden bg-teal-50">
-            {/* Background Image */}
-            <div 
-                className="absolute inset-0 w-full h-full"
-                style={{
-                    backgroundImage: `url(${illustration})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    opacity: 0.2,
-                }}
-            ></div>
-
-            {/* Content */}
-            <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
-                <p className="text-lg font-semibold text-gray-700">
-                    Enter the connect code your teacher shared with you below
-                </p>
-                <div className="flex items-start gap-2">
-                    <div>
-                        <input
-                            type="text"
-                            placeholder="Type connect code"
-                            value={code}
-                            onChange={(e) => {
-                                setCode(e.target.value);
-                                if (error) setError('');
-                            }}
-                            className="px-4 py-3 bg-white rounded-xl border-gray-300 w-64 text-center focus:outline-none focus:ring-2 focus:ring-teal-400"
-                        />
-                        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-                    </div>
-                    <button
-                        onClick={() => onJoin(code)}
-                        className="bg-teal-500 text-white font-semibold px-6 py-3 rounded-xl hover:bg-teal-600 transition-all duration-200"
-                    >
-                        Join Class
-                    </button>
-                </div>
-            </div>
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+            <h2 className="text-2xl font-bold text-gray-800">Anda belum bergabung dengan kelas</h2>
+            <p className="mt-2 text-gray-600">Masukkan kode kelas untuk bergabung.</p>
+            <form onSubmit={handleJoinClass} className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                <input type="text" value={classCode} onChange={(e) => setClassCode(e.target.value)} placeholder="Masukkan Kode Kelas" className="w-full sm:w-auto flex-grow px-4 py-3 border rounded-md" maxLength="6" />
+                <button type="submit" disabled={loading} className="w-full sm:w-auto px-6 py-3 bg-teal-600 text-white font-semibold rounded-md"> {loading ? 'Memproses...' : 'Gabung Kelas'} </button>
+            </form>
         </div>
     );
 };
