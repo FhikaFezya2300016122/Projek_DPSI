@@ -1,10 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 // Impor halaman-halaman utama Anda
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import DashboardPage from './pages/DashboardPage';
+import Register from "./pages/Register";
+import RegisterCard from "./pages/RegisterCard";
+import RegisterSuccess from "./pages/RegisterSuccess";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // Impor file CSS utama Anda
 import './index.css';
@@ -41,20 +46,23 @@ const Settings = () => (
 // --- Komponen App Utama ---
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Rute yang sudah ada */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-
-        {/* Tambahkan Rute Baru untuk Sidebar */}
-        <Route path="/classroom" element={<Classroom />} />
-        <Route path="/activity" element={<Activity />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </Router>
+    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID">
+      <Router>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/roleselection" element={<RegisterCard />} />
+          <Route path="/register-success" element={<RegisterSuccess />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/classroom" element={<Classroom />} />
+          <Route path="/activity" element={<Activity />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </Router>
+    </GoogleOAuthProvider>
   );
 }
 
