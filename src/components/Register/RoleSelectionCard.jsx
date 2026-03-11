@@ -26,4 +26,8 @@ export default function RoleSelectionCard({ role, selectedRole, onSelect }) {
       <p className="text-sm text-gray-500 text-center mt-1">{role.description}</p>
     </button>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> development

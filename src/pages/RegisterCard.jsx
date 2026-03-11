@@ -17,10 +17,18 @@ export default function RegisterCard() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       {/* Logo*/}
       <div className="flex items-center space-x-2 mb-6">
+<<<<<<< HEAD
         <img src={Icon} alt="Englify Logo" className="w-6 h-6" />
         <h1 className="text-xl font-semibold text-gray-700">Englify</h1>
       </div>
 
+=======
+        <img src={Icon} alt="Englify Logo" className="w-8 h-8" />
+        <h1 className="text-xl font-semibold text-gray-800">Englify</h1>
+      </div>
+
+      {/* Komponen Pilihan Role */}
+>>>>>>> development
       <RoleSelection
         selectedRole={selectedRole}
         setSelectedRole={setSelectedRole}
@@ -28,4 +36,8 @@ export default function RegisterCard() {
       />
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> development
