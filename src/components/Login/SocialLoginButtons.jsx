@@ -35,8 +35,4 @@ export default function SocialLoginButtons({ isRegister }) {
       </button>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> development

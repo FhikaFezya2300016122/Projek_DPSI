@@ -29,8 +29,7 @@ const ResultsPage = () => {
             };
             updateUserRank();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [user, pointsEarned]);
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">

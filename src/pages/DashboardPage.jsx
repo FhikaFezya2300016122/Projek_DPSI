@@ -1,36 +1,25 @@
-<<<<<<< HEAD
 // src/pages/DashboardPage.jsx
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { useAuth } from '../context/AuthContext'; // 1. Impor useAuth
+import { useAuth } from '../context/AuthContext';
 
 // Impor komponen KONTEN
-=======
-import React from 'react';
-
-// Impor semua komponen yang dibutuhkan untuk halaman dasbor.
-// Pastikan jalur ini cocok dengan struktur folder Anda.
-import Sidebar from '../components/layout/Sidebar/sidebar';
-import Header from '../components/layout/Header/Header';
->>>>>>> development
 import WelcomeBanner from '../components/dashboard/WelcomeBanner';
 import StatCards from '../components/dashboard/StatCards';
 import BadgeDisplay from '../components/dashboard/BadgeDisplay';
 import UserProfileCard from '../components/dashboard/UserProfileCard';
 import RecentActivity from '../components/dashboard/RecentActivity';
-<<<<<<< HEAD
-import AuthDebugger from '../components/AuthDebugger'; // 2. Impor AuthDebugger
+import AuthDebugger from '../components/AuthDebugger';
 
 const DashboardPage = () => {
-    const { user } = useAuth(); // 3. Dapatkan pengguna dari AuthContext
+    const { user } = useAuth();
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfileData = async () => {
-            // Pastikan ada pengguna yang login sebelum mengambil profil
             if (user) {
                 try {
                     const { data, error: profileError } = await supabase
@@ -42,7 +31,6 @@ const DashboardPage = () => {
                     if (profileError) throw profileError;
                     
                     if (data) {
-                        // Gabungkan data profil dari DB dengan email dari auth
                         const completeProfile = { ...data, email: user.email };
                         setProfile(completeProfile);
                     }
@@ -55,23 +43,20 @@ const DashboardPage = () => {
         };
         
         fetchProfileData();
-    }, [user]); // 4. Jalankan ulang efek ini setiap kali 'user' berubah
+    }, [user]);
 
-    // Tampilan saat loading
     if (loading) {
         return <div className="p-8 text-center">Loading Dashboard...</div>;
     }
 
-    // Tampilan jika ada error
     if (error) {
         return <div className="p-8 text-center text-red-500">Error: {error}</div>;
     }
 
-    // Tampilan jika pengguna tidak login atau profil tidak ditemukan
     if (!profile) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh]">
-                <AuthDebugger /> {/* Tetap tampilkan debugger untuk analisis */}
+                <AuthDebugger />
                 <p className="text-xl">Gagal memuat data dasbor.</p>
                 <p className="text-gray-500 mt-2">Pastikan Anda sudah login dan profil Anda ada.</p>
                 <a href="/login" className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg">
@@ -81,10 +66,9 @@ const DashboardPage = () => {
         );
     }
 
-    // Tampilan utama dasbor jika semua berhasil
     return (
         <>
-            <AuthDebugger /> {/* Tambahkan debugger untuk analisis di console */}
+            <AuthDebugger />
             <WelcomeBanner profile={profile} />
             <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-1">
@@ -103,36 +87,3 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
-=======
-
-// Ini adalah komponen utama untuk halaman dasbor Anda.
-// Tugasnya adalah menyusun semua komponen kecil menjadi satu halaman yang utuh.
-const DashboardPage = () => {
-  return (
-    <div className="flex min-h-screen bg-gray-50 font-sans">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 p-4 md:p-6 overflow-y-auto">
-          <WelcomeBanner />
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-1">
-              <StatCards />
-            </div>
-            <div className="lg:col-span-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 h-full">
-                <BadgeDisplay />
-                <UserProfileCard />
-              </div>
-            </div>
-          </div>
-          <RecentActivity />
-        </main>
-      </div>
-    </div>
-  );
-};
-
-// Jangan lupa untuk mengekspor komponen ini agar bisa digunakan di App.js
-export default DashboardPage;
->>>>>>> development

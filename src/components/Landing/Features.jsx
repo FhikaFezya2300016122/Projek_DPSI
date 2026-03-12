@@ -12,14 +12,9 @@ const Features = () => {
       desc: "Improve vocabulary and grammar through interactive games.",
       icon: GameIcon,
     },
-<<<<<<< HEAD
-
-    // tombol yang akan mengara ke classroom
-=======
->>>>>>> development
     {
       title: "Join Classes Effortlessly with a Code",
-      desc: "Easily connect with your teacher’s class using a unique code.",
+      desc: "Easily connect with your teacher's class using a unique code.",
       icon: ClassIcon,
     },
     {
@@ -49,7 +44,6 @@ const Features = () => {
             <img src={item.icon} alt="icon" className="w-20 h-20 mb-6" />
             <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
             <p className="text-base text-gray-700">{item.desc}</p>
-<<<<<<< HEAD
             {/* Tombol khusus untuk fitur Join Classes */}
             {item.title === "Join Classes Effortlessly with a Code" && (
               <button
@@ -59,8 +53,6 @@ const Features = () => {
                 Masuk Kelas
               </button>
             )}
-=======
->>>>>>> development
           </div>
         ))}
       </div>

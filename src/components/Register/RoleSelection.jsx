@@ -55,8 +55,4 @@ export default function RoleSelection({ selectedRole, setSelectedRole, onContinu
       </div>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> development
